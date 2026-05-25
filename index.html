@@ -1,352 +1,300 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>StabilTarife Vollmacht</title>
+<title>StabilTarife Vollmacht</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-  <style>
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#f4f4f4;
+padding:20px;
+margin:0;
+}
 
-    body{
-      margin:0;
-      padding:20px;
-      background:#f3f3f3;
-      font-family:Arial,sans-serif;
-    }
+.container{
+max-width:700px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 0 15px rgba(0,0,0,0.1);
+}
 
-    .container{
-      max-width:750px;
-      margin:auto;
-      background:#fff;
-      padding:35px;
-      border-radius:25px;
-      box-shadow:0 0 15px rgba(0,0,0,0.1);
-    }
+h1{
+text-align:center;
+color:#1d7f2a;
+}
 
-    h1{
-      text-align:center;
-      color:#0b8f1c;
-      font-size:38px;
-      margin-bottom:10px;
-    }
+label{
+font-weight:bold;
+display:block;
+margin-top:15px;
+}
 
-    p{
-      font-size:17px;
-      line-height:1.7;
-      color:#333;
-    }
+input, textarea{
+width:100%;
+padding:12px;
+margin-top:5px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:16px;
+box-sizing:border-box;
+}
 
-    .info{
-      background:#f8f8f8;
-      padding:20px;
-      border-radius:15px;
-      margin-top:20px;
-      margin-bottom:25px;
-    }
+textarea{
+height:120px;
+resize:none;
+}
 
-    input{
-      width:100%;
-      padding:15px;
-      margin-bottom:15px;
-      border-radius:12px;
-      border:1px solid #ccc;
-      font-size:16px;
-      box-sizing:border-box;
-    }
+canvas{
+border:2px solid #000;
+border-radius:10px;
+margin-top:10px;
+width:100%;
+background:white;
+touch-action:none;
+}
 
-    canvas{
-      width:100%;
-      height:220px;
-      border:2px solid #ccc;
-      border-radius:15px;
-      background:white;
-      margin-top:10px;
-    }
+.buttons{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
 
-    .btn{
-      width:100%;
-      padding:18px;
-      border:none;
-      border-radius:14px;
-      font-size:18px;
-      cursor:pointer;
-      margin-top:15px;
-      font-weight:bold;
-    }
+.clear-btn{
+background:#d60000;
+color:white;
+border:none;
+padding:12px;
+border-radius:8px;
+cursor:pointer;
+flex:1;
+font-size:16px;
+}
 
-    .btn-green{
-      background:#0b8f1c;
-      color:white;
-    }
+.submit-btn{
+background:#1d7f2a;
+color:white;
+border:none;
+padding:14px;
+border-radius:10px;
+cursor:pointer;
+width:100%;
+margin-top:25px;
+font-size:18px;
+font-weight:bold;
+}
 
-    .btn-green:hover{
-      background:#087515;
-    }
+.success{
+background:#e9ffe9;
+padding:20px;
+border-radius:12px;
+margin-top:20px;
+text-align:center;
+display:none;
+}
 
-    .btn-red{
-      background:#d62828;
-      color:white;
-    }
+.success h2{
+color:green;
+}
 
-    .btn-red:hover{
-      background:#b71c1c;
-    }
-
-    .success{
-      display:none;
-      margin-top:30px;
-      padding:30px;
-      background:#eefdee;
-      border-radius:20px;
-      text-align:center;
-    }
-
-    .success h2{
-      color:#0b8f1c;
-      font-size:40px;
-      margin-bottom:10px;
-    }
-
-    .success p{
-      font-size:22px;
-    }
-
-    .small{
-      margin-top:20px;
-      font-size:14px;
-      color:#555;
-      text-align:center;
-    }
-
-  </style>
+.text-box{
+background:#f9f9f9;
+padding:20px;
+border-radius:10px;
+margin-top:20px;
+line-height:1.6;
+border:1px solid #ddd;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <h1>✅ StabilTarife Vollmacht</h1>
+<h1>StabilTarife Vollmacht</h1>
 
-  <div class="info">
+<form id="vollmachtForm">
 
-    <p>
-      Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez,
-      in meinem Namen Energie- und Versicherungsangebote einzuholen,
-      Tarifvergleiche durchzuführen und abzuschließen sowie mit
-      Energieversorgern und Versicherungen zu kommunizieren.
-    </p>
+<label>Vorname *</label>
+<input type="text" id="vorname" required>
 
-  </div>
+<label>Nachname *</label>
+<input type="text" id="nachname" required>
 
-  <input type="text" id="vorname" placeholder="Vorname *" required>
+<label>Straße & Hausnummer *</label>
+<input type="text" id="strasse" required>
 
-  <input type="text" id="nachname" placeholder="Nachname *" required>
+<label>PLZ *</label>
+<input type="text" id="plz" required>
 
-  <input type="text" id="strasse" placeholder="Straße & Hausnummer *" required>
+<label>Stadt *</label>
+<input type="text" id="stadt" required>
 
-  <input type="text" id="plz" placeholder="PLZ *" required>
+<label>Geburtsdatum *</label>
+<input type="date" id="geburt" required>
 
-  <input type="text" id="stadt" placeholder="Stadt *" required>
+<label>E-Mail-Adresse *</label>
+<input type="email" id="kunden_email" required>
 
-  <input type="date" id="geburt" required>
+<div class="text-box">
+Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Energie- und Versicherungsangebote einzuholen, Tarifvergleiche durchzuführen und abzuschließen sowie mit Energieversorgern und Versicherungen zu kommunizieren.
+</div>
 
-  <input type="email" id="email" placeholder="E-Mail-Adresse *" required>
+<label style="margin-top:25px;">
+Unterschrift *
+</label>
 
-  <h3>Unterschrift *</h3>
+<canvas id="signature-pad" height="200"></canvas>
 
-  <canvas id="signature-pad"></canvas>
+<div class="buttons">
+<button type="button" class="clear-btn" id="clear">
+Unterschrift löschen
+</button>
+</div>
 
-  <button class="btn btn-red" onclick="clearSignature()">
-    Unterschrift löschen
-  </button>
+<button type="submit" class="submit-btn">
+Jetzt bestätigen & absenden
+</button>
 
-  <button class="btn btn-green" onclick="sendMail()">
-    Vollmacht unterschreiben & absenden
-  </button>
+</form>
 
-  <div class="small">
-    Mit dem Absenden bestätige ich die Richtigkeit meiner Angaben.
-  </div>
-
-  <div class="success" id="successBox">
-
-    <h2>✅ Erfolgreich bestätigt</h2>
-
-    <p>
-      Die Vollmacht wurde erfolgreich per E-Mail versendet.
-    </p>
-
-  </div>
+<div class="success" id="successBox">
+<h2>✅ Erfolgreich bestätigt</h2>
+<p>
+Die Vollmacht wurde erfolgreich erstellt und per E-Mail versendet.
+</p>
+</div>
 
 </div>
 
 <script>
 
-emailjs.init("SGyf9M8n2gNJT26Ds");
+emailjs.init("SGyf9M8n2gNJTZ6Ds");
+
+const serviceID = "service_2os3z8o";
+const templateID = "template_7xv5awl";
 
 const canvas = document.getElementById("signature-pad");
 const ctx = canvas.getContext("2d");
 
-canvas.width = canvas.offsetWidth;
-canvas.height = canvas.offsetHeight;
-
 let drawing = false;
 
-function startPosition(e){
-  drawing = true;
-  draw(e);
+function getPosition(e){
+const rect = canvas.getBoundingClientRect();
+
+if(e.touches){
+return {
+x:e.touches[0].clientX - rect.left,
+y:e.touches[0].clientY - rect.top
+};
 }
 
-function endPosition(){
-  drawing = false;
-  ctx.beginPath();
+return {
+x:e.clientX - rect.left,
+y:e.clientY - rect.top
+};
+}
+
+function start(e){
+drawing = true;
+draw(e);
+}
+
+function end(){
+drawing = false;
+ctx.beginPath();
 }
 
 function draw(e){
+if(!drawing) return;
 
-  if(!drawing) return;
+e.preventDefault();
 
-  ctx.lineWidth = 2;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "#000";
+const pos = getPosition(e);
 
-  const rect = canvas.getBoundingClientRect();
+ctx.lineWidth = 2;
+ctx.lineCap = "round";
+ctx.strokeStyle = "#000";
 
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-
-  ctx.lineTo(x,y);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(x,y);
+ctx.lineTo(pos.x,pos.y);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(pos.x,pos.y);
 }
 
-canvas.addEventListener("mousedown", startPosition);
-canvas.addEventListener("mouseup", endPosition);
-canvas.addEventListener("mousemove", draw);
+canvas.addEventListener("mousedown",start);
+canvas.addEventListener("mouseup",end);
+canvas.addEventListener("mousemove",draw);
 
-canvas.addEventListener("touchstart", (e)=>{
-  drawing = true;
+canvas.addEventListener("touchstart",start);
+canvas.addEventListener("touchend",end);
+canvas.addEventListener("touchmove",draw);
+
+document.getElementById("clear").addEventListener("click",()=>{
+ctx.clearRect(0,0,canvas.width,canvas.height);
 });
 
-canvas.addEventListener("touchend", ()=>{
-  drawing = false;
-  ctx.beginPath();
-});
+document.getElementById("vollmachtForm").addEventListener("submit",function(e){
 
-canvas.addEventListener("touchmove", (e)=>{
+e.preventDefault();
 
-  e.preventDefault();
+const imageData = canvas.toDataURL();
 
-  if(!drawing) return;
-
-  const touch = e.touches[0];
-  const rect = canvas.getBoundingClientRect();
-
-  const x = touch.clientX - rect.left;
-  const y = touch.clientY - rect.top;
-
-  ctx.lineWidth = 2;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "#000";
-
-  ctx.lineTo(x,y);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-
-});
-
-function clearSignature(){
-
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
+if(imageData.length < 5000){
+alert("Bitte unterschreiben.");
+return;
 }
 
-function sendMail(){
+const vorname = document.getElementById("vorname").value;
+const nachname = document.getElementById("nachname").value;
+const strasse = document.getElementById("strasse").value;
+const plz = document.getElementById("plz").value;
+const stadt = document.getElementById("stadt").value;
+const geburt = document.getElementById("geburt").value;
+const kunden_email = document.getElementById("kunden_email").value;
 
-  const vorname = document.getElementById("vorname").value;
-  const nachname = document.getElementById("nachname").value;
-  const strasse = document.getElementById("strasse").value;
-  const plz = document.getElementById("plz").value;
-  const stadt = document.getElementById("stadt").value;
-  const geburt = document.getElementById("geburt").value;
-  const email = document.getElementById("email").value;
+const message = `
+Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Energie- und Versicherungsangebote einzuholen, Tarifvergleiche durchzuführen und abzuschließen sowie mit Energieversorgern und Versicherungen zu kommunizieren.
 
-  if(
-    !vorname ||
-    !nachname ||
-    !strasse ||
-    !plz ||
-    !stadt ||
-    !geburt ||
-    !email
-  ){
-    alert("Bitte alle Pflichtfelder ausfüllen.");
-    return;
-  }
+UNTERSCHRIFT:
+${imageData}
+`;
 
-  const signature = canvas.toDataURL();
+emailjs.send(serviceID, templateID, {
 
-  const templateParams = {
+vorname: vorname,
+nachname: nachname,
+strasse: strasse,
+plz: plz,
+stadt: stadt,
+geburt: geburt,
+kunden_email: kunden_email,
+message: message,
+email: kunden_email,
+name: vorname + " " + nachname,
+title: "Neue StabilTarife Vollmacht"
 
-    vorname: vorname,
-    nachname: nachname,
-    strasse: strasse,
-    plz: plz,
-    stadt: stadt,
-    geburt: geburt,
-    kunden_email: email,
+})
+.then(function(){
 
-    message: `
+document.getElementById("vollmachtForm").style.display = "none";
+document.getElementById("successBox").style.display = "block";
 
-Vorname: ${vorname}
+})
+.catch(function(error){
 
-Nachname: ${nachname}
+alert("Fehler beim Versand: " + JSON.stringify(error));
 
-Straße: ${strasse}
+});
 
-PLZ: ${plz}
-
-Stadt: ${stadt}
-
-Geburtsdatum: ${geburt}
-
-E-Mail: ${email}
-
-Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez,
-in meinem Namen Energie- und Versicherungsangebote einzuholen,
-Tarifvergleiche durchzuführen und abzuschließen sowie mit
-Energieversorgern und Versicherungen zu kommunizieren.
-
-    `,
-
-    signature: signature
-
-  };
-
-  emailjs.send(
-    "service_2os3z8o",
-    "template_xxxxxxx",
-    templateParams
-  )
-
-  .then(function(response){
-
-    document.getElementById("successBox").style.display = "block";
-
-  })
-
-  .catch(function(error){
-
-    alert("Fehler beim Versand: " + JSON.stringify(error));
-
-  });
-
-}
+});
 
 </script>
 
