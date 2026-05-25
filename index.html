@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>StabilTarife Freigabe</title>
+<title>StabilTarife Servicefreigabe</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 
@@ -13,12 +15,12 @@ font-family:Arial,sans-serif;
 background:#f2f2f2;
 display:flex;
 justify-content:center;
-padding:30px;
+padding:20px;
 }
 
 .card{
 background:white;
-max-width:450px;
+max-width:500px;
 width:100%;
 padding:25px;
 border-radius:25px;
@@ -36,6 +38,11 @@ color:gray;
 margin-bottom:25px;
 }
 
+label{
+font-weight:bold;
+font-size:14px;
+}
+
 input{
 width:100%;
 padding:15px;
@@ -43,8 +50,9 @@ margin-top:8px;
 margin-bottom:18px;
 border-radius:15px;
 border:1px solid #ddd;
-background:#f7f7f7;
+background:#fafafa;
 font-size:16px;
+box-sizing:border-box;
 }
 
 .box{
@@ -74,8 +82,17 @@ opacity:0.9;
 .small{
 font-size:12px;
 color:gray;
-line-height:1.5;
+line-height:1.6;
 margin-top:18px;
+}
+
+.success{
+display:none;
+text-align:center;
+}
+
+.success h2{
+color:green;
 }
 
 .footer{
@@ -83,16 +100,6 @@ text-align:center;
 margin-top:20px;
 font-size:13px;
 color:gray;
-}
-
-.success{
-display:none;
-text-align:center;
-padding:30px;
-}
-
-.success h2{
-color:green;
 }
 
 </style>
@@ -109,14 +116,32 @@ color:green;
 Digitale Servicefreigabe
 </p>
 
-<label>Name</label>
-<input id="name" value="Max Mustermann">
+<label>Vorname</label>
+<input id="vorname">
 
-<label>Adresse</label>
-<input value="Musterstraße 1">
+<label>Nachname</label>
+<input id="nachname">
 
-<label>Telefon</label>
-<input value="0123456789">
+<label>Straße</label>
+<input id="strasse">
+
+<label>Hausnummer</label>
+<input id="hausnummer">
+
+<label>PLZ</label>
+<input id="plz">
+
+<label>Stadt</label>
+<input id="stadt">
+
+<label>Geburtsdatum</label>
+<input type="date" id="geburt">
+
+<label>Telefonnummer</label>
+<input id="telefon">
+
+<label>E-Mail-Adresse</label>
+<input type="email" id="email">
 
 <div class="box">
 ✅ Stromoptimierung<br><br>
@@ -128,8 +153,8 @@ Digitale Servicefreigabe
 Mit meiner Bestätigung erteile ich StabilTarife die Zustimmung zur Unterstützung bei Energie- und Versicherungsoptimierungen sowie zur Kommunikation mit Anbietern.
 </div>
 
-<button class="button" onclick="confirmForm()">
-Jetzt bestätigen
+<button class="button" onclick="generatePDF()">
+Jetzt bestätigen & PDF erstellen
 </button>
 
 <div class="small">
@@ -148,44 +173,68 @@ StabilTarife • Ibrahim Doenmez<br>
 <h2>✅ Erfolgreich bestätigt</h2>
 
 <p>
-Vielen Dank.<br><br>
-Ihre Servicefreigabe wurde erfolgreich bestätigt und gespeichert.
+Die Servicefreigabe wurde erfolgreich erstellt.
 </p>
 
-<p id="savedData"></p>
+<p>
+Das PDF wurde heruntergeladen.
+</p>
 
 </div>
 
 <script>
 
-function confirmForm(){
+async function generatePDF(){
 
-let name = document.getElementById("name").value;
+const { jsPDF } = window.jspdf;
+
+let vorname = document.getElementById("vorname").value;
+let nachname = document.getElementById("nachname").value;
+let strasse = document.getElementById("strasse").value;
+let hausnummer = document.getElementById("hausnummer").value;
+let plz = document.getElementById("plz").value;
+let stadt = document.getElementById("stadt").value;
+let geburt = document.getElementById("geburt").value;
+let telefon = document.getElementById("telefon").value;
+let email = document.getElementById("email").value;
 
 let now = new Date();
 
-let date = now.toLocaleDateString("de-DE");
-let time = now.toLocaleTimeString("de-DE");
+let datum = now.toLocaleDateString("de-DE");
+let zeit = now.toLocaleTimeString("de-DE");
 
-localStorage.setItem("kunde_name", name);
-localStorage.setItem("zustimmung_datum", date);
-localStorage.setItem("zustimmung_uhrzeit", time);
+const doc = new jsPDF();
+
+doc.setFontSize(18);
+doc.text("StabilTarife Servicefreigabe", 20, 20);
+
+doc.setFontSize(12);
+
+doc.text("Vorname: " + vorname, 20, 40);
+doc.text("Nachname: " + nachname, 20, 50);
+doc.text("Straße: " + strasse, 20, 60);
+doc.text("Hausnummer: " + hausnummer, 20, 70);
+doc.text("PLZ: " + plz, 20, 80);
+doc.text("Stadt: " + stadt, 20, 90);
+doc.text("Geburtsdatum: " + geburt, 20, 100);
+doc.text("Telefon: " + telefon, 20, 110);
+doc.text("E-Mail: " + email, 20, 120);
+
+doc.text(" ", 20, 130);
+
+doc.text("Der Kunde erteilt StabilTarife die Zustimmung", 20, 140);
+doc.text("zur Unterstützung bei Energie- und", 20, 150);
+doc.text("Versicherungsoptimierungen.", 20, 160);
+
+doc.text(" ", 20, 170);
+
+doc.text("Datum: " + datum, 20, 180);
+doc.text("Uhrzeit: " + zeit, 20, 190);
+
+doc.save("StabilTarife-Servicefreigabe.pdf");
 
 document.getElementById("formCard").style.display="none";
-
 document.getElementById("successCard").style.display="block";
-
-document.getElementById("savedData").innerHTML =
-"<b>Name:</b> " + name + "<br>" +
-"<b>Datum:</b> " + date + "<br>" +
-"<b>Uhrzeit:</b> " + time;
-
-setTimeout(function(){
-
-window.location.href =
-"https://wa.me/4917621722127?text=Hallo%20StabilTarife,%20ich%20bestätige%20die%20digitale%20Servicefreigabe.";
-
-},3000);
 
 }
 
