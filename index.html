@@ -8,7 +8,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
 
@@ -43,12 +42,17 @@ margin-bottom:25px;
 label{
 font-weight:bold;
 font-size:14px;
+display:block;
+margin-bottom:5px;
+}
+
+.required{
+color:red;
 }
 
 input{
 width:100%;
 padding:15px;
-margin-top:8px;
 margin-bottom:18px;
 border-radius:15px;
 border:1px solid #ddd;
@@ -59,10 +63,11 @@ box-sizing:border-box;
 
 .box{
 background:#f7f7f7;
-padding:15px;
+padding:18px;
 border-radius:15px;
 margin-bottom:18px;
-line-height:1.7;
+line-height:1.8;
+font-size:15px;
 }
 
 canvas{
@@ -71,6 +76,7 @@ border-radius:15px;
 width:100%;
 height:200px;
 background:white;
+margin-top:10px;
 }
 
 .button{
@@ -84,6 +90,10 @@ font-size:18px;
 cursor:pointer;
 font-weight:bold;
 margin-top:20px;
+}
+
+.button:hover{
+opacity:0.9;
 }
 
 .small{
@@ -123,51 +133,57 @@ color:gray;
 Digitale Service- & Handlungsvollmacht
 </p>
 
-<label>Vorname</label>
-<input id="vorname">
+<label>Vorname <span class="required">*</span></label>
+<input id="vorname" required>
 
-<label>Nachname</label>
-<input id="nachname">
+<label>Nachname <span class="required">*</span></label>
+<input id="nachname" required>
 
-<label>Straße</label>
-<input id="strasse">
+<label>Straße <span class="required">*</span></label>
+<input id="strasse" required>
 
-<label>Hausnummer</label>
-<input id="hausnummer">
+<label>Hausnummer <span class="required">*</span></label>
+<input id="hausnummer" required>
 
-<label>PLZ</label>
-<input id="plz">
+<label>PLZ <span class="required">*</span></label>
+<input id="plz" required>
 
-<label>Stadt</label>
-<input id="stadt">
+<label>Stadt <span class="required">*</span></label>
+<input id="stadt" required>
 
-<label>Geburtsdatum</label>
-<input type="date" id="geburt">
+<label>Geburtsdatum <span class="required">*</span></label>
+<input type="date" id="geburt" required>
 
-<label>Telefonnummer</label>
-<input id="telefon">
+<label>Telefonnummer <span class="required">*</span></label>
+<input id="telefon" required>
 
-<label>E-Mail-Adresse</label>
-<input type="email" id="email">
+<label>E-Mail-Adresse <span class="required">*</span></label>
+<input type="email" id="email" required>
 
 <div class="box">
-✅ Stromoptimierung<br><br>
-✅ Gasoptimierung<br><br>
+
+✅ Stromoptimierung<br>
+✅ Gasoptimierung<br>
 ✅ Versicherungsoptimierung
+
 </div>
 
 <div class="box">
-Hiermit bevollmächtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Angebote einzuholen, Anbieter zu kontaktieren, Tarifwechsel vorzubereiten sowie Energie- und Versicherungsverträge zu vermitteln.<br><br>
 
-Vertragsabschlüsse erfolgen ausschließlich nach meiner Zustimmung.
+Hiermit bevollmächtige und berechtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Energie- und Versicherungsangebote einzuholen, Anbieter und Versicherungen zu kontaktieren, Tarifvergleiche durchzuführen sowie Strom-, Gas- und Versicherungsverträge nach vorheriger Absprache mit mir zu vermitteln und vorzubereiten.<br><br>
+
+StabilTarife darf hierzu notwendige vertragsbezogene Informationen einholen und mit Energieversorgern, Versicherungen sowie Vertragspartnern kommunizieren.<br><br>
+
+Vertragsabschlüsse erfolgen ausschließlich nach meiner ausdrücklichen Zustimmung.
+
 </div>
 
-<label>Digitale Unterschrift</label>
+<label>Digitale Unterschrift <span class="required">*</span></label>
 
 <canvas id="signature"></canvas>
 
 <button class="button" onclick="generatePDF()">
-Jetzt unterschreiben & absenden
+Jetzt unterschreiben & PDF erstellen
 </button>
 
 <div class="small">
@@ -186,14 +202,16 @@ StabilTarife • Ibrahim Doenmez<br>
 <h2>✅ Erfolgreich bestätigt</h2>
 
 <p>
-Die Vollmacht wurde erfolgreich erstellt und versendet.
+Die digitale Vollmacht wurde erfolgreich erstellt.
+</p>
+
+<p>
+Das PDF wurde heruntergeladen.
 </p>
 
 </div>
 
 <script>
-
-emailjs.init("DEIN_PUBLIC_KEY");
 
 const canvas = document.getElementById('signature');
 const signaturePad = new SignaturePad(canvas);
@@ -205,8 +223,6 @@ alert("Bitte unterschreiben.");
 return;
 }
 
-const { jsPDF } = window.jspdf;
-
 let vorname = document.getElementById("vorname").value;
 let nachname = document.getElementById("nachname").value;
 let strasse = document.getElementById("strasse").value;
@@ -216,6 +232,23 @@ let stadt = document.getElementById("stadt").value;
 let geburt = document.getElementById("geburt").value;
 let telefon = document.getElementById("telefon").value;
 let email = document.getElementById("email").value;
+
+if(
+!vorname ||
+!nachname ||
+!strasse ||
+!hausnummer ||
+!plz ||
+!stadt ||
+!geburt ||
+!telefon ||
+!email
+){
+alert("Bitte alle Pflichtfelder ausfüllen.");
+return;
+}
+
+const { jsPDF } = window.jspdf;
 
 let now = new Date();
 
@@ -241,15 +274,15 @@ doc.text("E-Mail: " + email,20,120);
 
 doc.text(" ",20,130);
 
-doc.text("Der Kunde erteilt StabilTarife die Vollmacht",20,140);
-doc.text("zur Vermittlung und Kommunikation mit Anbietern.",20,150);
+doc.text("Der Kunde erteilt StabilTarife die digitale",20,140);
+doc.text("Service- und Handlungsvollmacht.",20,150);
 
 doc.text("Datum: " + datum,20,170);
 doc.text("Uhrzeit: " + zeit,20,180);
 
 const signatureImage = signaturePad.toDataURL();
 
-doc.addImage(signatureImage,'PNG',20,190,60,30);
+doc.addImage(signatureImage,'PNG',20,190,70,30);
 
 doc.save("StabilTarife-Vollmacht.pdf");
 
