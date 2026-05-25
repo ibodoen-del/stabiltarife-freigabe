@@ -3,10 +3,6 @@ const PDFDocument = require("pdfkit");
 
 module.exports = async (req, res) => {
 
-  if (typeof req.body === "string") {
-    req.body = JSON.parse(req.body);
-  }
-
   if (req.method !== "POST") {
     return res.status(405).send("Nur POST erlaubt");
   }
@@ -28,7 +24,7 @@ module.exports = async (req, res) => {
       margin: 40
     });
 
-    const buffers = [];
+    let buffers = [];
 
     doc.on("data", buffers.push.bind(buffers));
 
@@ -54,8 +50,7 @@ module.exports = async (req, res) => {
         attachments: [
           {
             filename: "StabilTarife-Vollmacht.pdf",
-            content: pdfData,
-            contentType: "application/pdf"
+            content: pdfData
           }
         ]
       });
@@ -75,32 +70,17 @@ module.exports = async (req, res) => {
     doc.fontSize(14);
 
     doc.text(`Vorname: ${vorname}`);
-    doc.moveDown();
-
     doc.text(`Nachname: ${nachname}`);
-    doc.moveDown();
-
     doc.text(`Straße: ${strasse}`);
-    doc.moveDown();
-
     doc.text(`PLZ: ${plz}`);
-    doc.moveDown();
-
     doc.text(`Stadt: ${stadt}`);
-    doc.moveDown();
-
     doc.text(`Geburtsdatum: ${geburtsdatum}`);
-    doc.moveDown();
-
     doc.text(`E-Mail: ${email}`);
 
     doc.moveDown(2);
 
     doc.text(
-      "Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Energie- und Versicherungsangebote einzuholen, Tarifvergleiche durchzuführen und abzuschließen sowie mit Energieversorgern und Versicherungen zu kommunizieren.",
-      {
-        align: "justify"
-      }
+      "Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Energie- und Versicherungsangebote einzuholen, Tarifvergleiche durchzuführen und abzuschließen sowie mit Energieversorgern und Versicherungen zu kommunizieren."
     );
 
     doc.moveDown(3);
@@ -117,8 +97,7 @@ module.exports = async (req, res) => {
       const imageBuffer = Buffer.from(base64Data, "base64");
 
       doc.image(imageBuffer, {
-        fit: [250, 120],
-        align: "left"
+        fit: [250, 120]
       });
 
     }
