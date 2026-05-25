@@ -2,11 +2,17 @@ const nodemailer = require("nodemailer");
 const PDFDocument = require("pdfkit");
 
 module.exports = async (req, res) => {
+
+  if (typeof req.body === "string") {
+    req.body = JSON.parse(req.body);
+  }
+
   if (req.method !== "POST") {
     return res.status(405).send("Nur POST erlaubt");
   }
 
   try {
+
     const {
       vorname,
       nachname,
@@ -27,6 +33,7 @@ module.exports = async (req, res) => {
     doc.on("data", buffers.push.bind(buffers));
 
     doc.on("end", async () => {
+
       const pdfData = Buffer.concat(buffers);
 
       const transporter = nodemailer.createTransport({
@@ -47,7 +54,8 @@ module.exports = async (req, res) => {
         attachments: [
           {
             filename: "StabilTarife-Vollmacht.pdf",
-            content: pdfData
+            content: pdfData,
+            contentType: "application/pdf"
           }
         ]
       });
@@ -55,6 +63,7 @@ module.exports = async (req, res) => {
       return res.status(200).json({
         success: true
       });
+
     });
 
     doc.fontSize(24).text("StabilTarife Vollmacht", {
@@ -64,6 +73,7 @@ module.exports = async (req, res) => {
     doc.moveDown(2);
 
     doc.fontSize(14);
+
     doc.text(`Vorname: ${vorname}`);
     doc.moveDown();
 
@@ -98,6 +108,7 @@ module.exports = async (req, res) => {
     doc.fontSize(16).text("Unterschrift:");
 
     if (unterschrift) {
+
       const base64Data = unterschrift.replace(
         /^data:image\/png;base64,/,
         ""
@@ -109,14 +120,19 @@ module.exports = async (req, res) => {
         fit: [250, 120],
         align: "left"
       });
+
     }
 
     doc.end();
+
   } catch (error) {
+
     console.error(error);
 
     return res.status(500).json({
       error: error.message
     });
+
   }
+
 };
