@@ -6,116 +6,67 @@
 
 <title>StabilTarife Vollmacht</title>
 
-<style>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 
+<style>
 body{
-font-family:Arial,sans-serif;
-background:#f3f3f3;
+font-family:Arial;
+background:#f5f5f5;
 padding:20px;
-margin:0;
 }
 
 .container{
-max-width:750px;
+max-width:700px;
 margin:auto;
-background:#fff;
+background:white;
 padding:30px;
-border-radius:18px;
-box-shadow:0 0 20px rgba(0,0,0,0.08);
+border-radius:15px;
+box-shadow:0 0 15px rgba(0,0,0,0.1);
 }
 
 h1{
 text-align:center;
-color:#177b2c;
+color:green;
 margin-bottom:30px;
-}
-
-label{
-display:block;
-margin-top:18px;
-font-weight:bold;
 }
 
 input{
 width:100%;
-padding:14px;
-border-radius:10px;
+padding:12px;
+margin-bottom:15px;
 border:1px solid #ccc;
-margin-top:6px;
+border-radius:8px;
 font-size:16px;
-box-sizing:border-box;
-}
-
-.info-box{
-margin-top:25px;
-background:#f8f8f8;
-padding:20px;
-border-radius:12px;
-line-height:1.7;
-border:1px solid #ddd;
 }
 
 canvas{
+border:2px solid #ccc;
+border-radius:10px;
 width:100%;
-height:220px;
-border:2px solid #000;
-border-radius:12px;
-background:#fff;
-margin-top:10px;
-touch-action:none;
+height:200px;
+background:white;
 }
 
-.button-row{
-display:flex;
-gap:10px;
-margin-top:15px;
-}
-
-.clear-btn{
-flex:1;
-padding:14px;
-background:#d40000;
-color:#fff;
+button{
+padding:14px 20px;
 border:none;
 border-radius:10px;
 font-size:16px;
 cursor:pointer;
+margin-top:10px;
 }
 
-.submit-btn{
+.send{
+background:green;
+color:white;
 width:100%;
-padding:16px;
-margin-top:30px;
-background:#177b2c;
-color:#fff;
-border:none;
-border-radius:12px;
-font-size:18px;
-font-weight:bold;
-cursor:pointer;
 }
 
-.success{
-display:none;
-background:#e9ffe9;
-padding:25px;
-border-radius:14px;
-margin-top:25px;
-text-align:center;
+.clear{
+background:red;
+color:white;
+width:100%;
 }
-
-.success h2{
-color:green;
-margin-bottom:10px;
-}
-
-.loading{
-display:none;
-text-align:center;
-margin-top:20px;
-font-weight:bold;
-}
-
 </style>
 </head>
 
@@ -125,218 +76,87 @@ font-weight:bold;
 
 <h1>StabilTarife Vollmacht</h1>
 
-<form id="vollmachtForm">
+<input id="vorname" placeholder="Vorname *" required>
+<input id="nachname" placeholder="Nachname *" required>
+<input id="strasse" placeholder="Straße & Hausnummer *" required>
+<input id="plz" placeholder="PLZ *" required>
+<input id="stadt" placeholder="Stadt *" required>
 
-<label>Vorname *</label>
-<input type="text" id="vorname" required>
+<input id="geburtsdatum" type="date" required>
 
-<label>Nachname *</label>
-<input type="text" id="nachname" required>
+<input id="email" type="email" placeholder="E-Mail-Adresse *" required>
 
-<label>Straße & Hausnummer *</label>
-<input type="text" id="strasse" required>
+<p>
+Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Energie- und Versicherungsangebote einzuholen, Tarifvergleiche durchzuführen und abzuschließen sowie mit Energieversorgern und Versicherungen zu kommunizieren.
+</p>
 
-<label>PLZ *</label>
-<input type="text" id="plz" required>
-
-<label>Stadt *</label>
-<input type="text" id="stadt" required>
-
-<label>Geburtsdatum *</label>
-<input type="date" id="geburt" required>
-
-<label>E-Mail-Adresse *</label>
-<input type="email" id="email" required>
-
-<div class="info-box">
-
-Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez,
-in meinem Namen Energie- und Versicherungsangebote einzuholen,
-Tarifvergleiche durchzuführen und abzuschließen sowie mit
-Energieversorgern und Versicherungen zu kommunizieren.
-
-</div>
-
-<label style="margin-top:30px;">
-Unterschrift *
-</label>
+<h3>Unterschrift</h3>
 
 <canvas id="signature-pad"></canvas>
 
-<div class="button-row">
-
-<button type="button" class="clear-btn" id="clear">
+<button class="clear" onclick="clearSignature()">
 Unterschrift löschen
 </button>
 
-</div>
-
-<button type="submit" class="submit-btn">
-Jetzt bestätigen & absenden
+<button class="send" onclick="sendForm()">
+Jetzt unterschreiben & senden
 </button>
-
-<div class="loading" id="loading">
-PDF wird erstellt und versendet...
-</div>
-
-</form>
-
-<div class="success" id="successBox">
-
-<h2>✅ Erfolgreich bestätigt</h2>
-
-<p>
-Die Vollmacht wurde erfolgreich als PDF erstellt und per E-Mail versendet.
-</p>
-
-</div>
 
 </div>
 
 <script>
-
 const canvas = document.getElementById("signature-pad");
-const ctx = canvas.getContext("2d");
 
 canvas.width = canvas.offsetWidth;
-canvas.height = 220;
+canvas.height = 200;
 
-let drawing = false;
+const signaturePad = new SignaturePad(canvas);
 
-function getPos(e){
-
-const rect = canvas.getBoundingClientRect();
-
-if(e.touches){
-
-return{
-x:e.touches[0].clientX - rect.left,
-y:e.touches[0].clientY - rect.top
-};
-
+function clearSignature(){
+signaturePad.clear();
 }
 
-return{
-x:e.clientX - rect.left,
-y:e.clientY - rect.top
-};
+async function sendForm(){
 
-}
-
-function start(e){
-
-drawing = true;
-draw(e);
-
-}
-
-function end(){
-
-drawing = false;
-ctx.beginPath();
-
-}
-
-function draw(e){
-
-if(!drawing) return;
-
-e.preventDefault();
-
-const pos = getPos(e);
-
-ctx.lineWidth = 2;
-ctx.lineCap = "round";
-ctx.strokeStyle = "#000";
-
-ctx.lineTo(pos.x,pos.y);
-ctx.stroke();
-
-ctx.beginPath();
-ctx.moveTo(pos.x,pos.y);
-
-}
-
-canvas.addEventListener("mousedown",start);
-canvas.addEventListener("mouseup",end);
-canvas.addEventListener("mousemove",draw);
-
-canvas.addEventListener("touchstart",start);
-canvas.addEventListener("touchend",end);
-canvas.addEventListener("touchmove",draw);
-
-document.getElementById("clear").addEventListener("click",()=>{
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-});
-
-document.getElementById("vollmachtForm").addEventListener("submit",async function(e){
-
-e.preventDefault();
-
-const signature = canvas.toDataURL("image/png");
-
-if(signature.length < 5000){
-
-alert("Bitte unterschreiben.");
+if(signaturePad.isEmpty()){
+alert("Bitte unterschreiben");
 return;
-
 }
-
-document.getElementById("loading").style.display = "block";
 
 const data = {
-
 vorname: document.getElementById("vorname").value,
 nachname: document.getElementById("nachname").value,
 strasse: document.getElementById("strasse").value,
 plz: document.getElementById("plz").value,
 stadt: document.getElementById("stadt").value,
-geburt: document.getElementById("geburt").value,
+geburtsdatum: document.getElementById("geburtsdatum").value,
 email: document.getElementById("email").value,
-signature: signature
-
+unterschrift: signaturePad.toDataURL()
 };
 
 try{
 
 const response = await fetch("/api/send",{
-
 method:"POST",
-
 headers:{
 "Content-Type":"application/json"
 },
-
-body: JSON.stringify(data)
-
+body:JSON.stringify(data)
 });
 
 const result = await response.json();
 
 if(result.success){
-
-document.getElementById("vollmachtForm").style.display = "none";
-
-document.getElementById("loading").style.display = "none";
-
-document.getElementById("successBox").style.display = "block";
-
+alert("PDF erfolgreich versendet!");
 }else{
-
-alert(result.error || "Fehler");
-
+alert("Fehler: " + JSON.stringify(result));
 }
 
-}catch(err){
-
-alert("Fehler beim Versand.");
-
+}catch(error){
+console.error(error);
+alert("Versand fehlgeschlagen");
 }
-
-});
-
+}
 </script>
 
 </body>
