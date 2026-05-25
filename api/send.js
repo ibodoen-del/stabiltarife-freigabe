@@ -1,5 +1,4 @@
 const nodemailer = require("nodemailer");
-const PDFDocument = require("pdfkit");
 
 module.exports = async (req, res) => {
 
@@ -20,89 +19,51 @@ module.exports = async (req, res) => {
       unterschrift
     } = req.body;
 
-    const doc = new PDFDocument({
-      margin: 40
+    const transporter = nodemailer.createTransport({
+      host: "smtp.ionos.de",
+      port: 587,
+      secure: false,
+      auth: {
+        user: "info@stabiltarife.de",
+        pass: "22021998Zhn#.,"
+      }
     });
 
-    let buffers = [];
+    const html = `
+      <h2>Neue StabilTarife Vollmacht</h2>
 
-    doc.on("data", buffers.push.bind(buffers));
+      <p><b>Vorname:</b> ${vorname}</p>
+      <p><b>Nachname:</b> ${nachname}</p>
+      <p><b>Straße:</b> ${strasse}</p>
+      <p><b>PLZ:</b> ${plz}</p>
+      <p><b>Stadt:</b> ${stadt}</p>
+      <p><b>Geburtsdatum:</b> ${geburtsdatum}</p>
+      <p><b>E-Mail:</b> ${email}</p>
 
-    doc.on("end", async () => {
+      <hr>
 
-      const pdfData = Buffer.concat(buffers);
+      <p>
+      Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez,
+      in meinem Namen Energie- und Versicherungsangebote einzuholen,
+      Tarifvergleiche durchzuführen und abzuschließen sowie mit
+      Energieversorgern und Versicherungen zu kommunizieren.
+      </p>
 
-      const transporter = nodemailer.createTransport({
-        host: "smtp.ionos.de",
-        port: 587,
-        secure: false,
-        auth: {
-          user: "info@stabiltarife.de",
-          pass: "22021998Zhn#.,"
-        }
-      });
+      <h3>Unterschrift</h3>
 
-      await transporter.sendMail({
-        from: '"StabilTarife" <info@stabiltarife.de>',
-        to: `${email}, info@stabiltarife.de`,
-        subject: "Ihre StabilTarife Vollmacht",
-        text: "Im Anhang befindet sich Ihre unterschriebene Vollmacht als PDF.",
-        attachments: [
-          {
-            filename: "StabilTarife-Vollmacht.pdf",
-            content: pdfData
-          }
-        ]
-      });
+      <img src="${unterschrift}" style="max-width:300px;border:1px solid #ccc;">
+    `;
 
-      return res.status(200).json({
-        success: true
-      });
-
+    await transporter.sendMail({
+      from: '"StabilTarife" <info@stabiltarife.de>',
+      to: `${email}, info@stabiltarife.de`,
+      subject: "Ihre StabilTarife Vollmacht",
+      html: html
     });
 
-    doc.fontSize(24).text("StabilTarife Vollmacht", {
-      align: "center"
+    return res.status(200).json({
+      success: true
     });
-
-    doc.moveDown(2);
-
-    doc.fontSize(14);
-
-    doc.text(`Vorname: ${vorname}`);
-    doc.text(`Nachname: ${nachname}`);
-    doc.text(`Straße: ${strasse}`);
-    doc.text(`PLZ: ${plz}`);
-    doc.text(`Stadt: ${stadt}`);
-    doc.text(`Geburtsdatum: ${geburtsdatum}`);
-    doc.text(`E-Mail: ${email}`);
-
-    doc.moveDown(2);
-
-    doc.text(
-      "Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Energie- und Versicherungsangebote einzuholen, Tarifvergleiche durchzuführen und abzuschließen sowie mit Energieversorgern und Versicherungen zu kommunizieren."
-    );
-
-    doc.moveDown(3);
-
-    doc.fontSize(16).text("Unterschrift:");
-
-    if (unterschrift) {
-
-      const base64Data = unterschrift.replace(
-        /^data:image\/png;base64,/,
-        ""
-      );
-
-      const imageBuffer = Buffer.from(base64Data, "base64");
-
-      doc.image(imageBuffer, {
-        fit: [250, 120]
-      });
-
-    }
-
-    doc.end();
 
   } catch (error) {
 
