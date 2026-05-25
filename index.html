@@ -6,15 +6,13 @@
 
 <title>StabilTarife Vollmacht</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
 <style>
 
 body{
 font-family:Arial,sans-serif;
 background:#f3f3f3;
-margin:0;
 padding:20px;
+margin:0;
 }
 
 .container{
@@ -111,6 +109,13 @@ color:green;
 margin-bottom:10px;
 }
 
+.loading{
+display:none;
+text-align:center;
+margin-top:20px;
+font-weight:bold;
+}
+
 </style>
 </head>
 
@@ -141,7 +146,7 @@ margin-bottom:10px;
 <input type="date" id="geburt" required>
 
 <label>E-Mail-Adresse *</label>
-<input type="email" id="kunden_email" required>
+<input type="email" id="email" required>
 
 <div class="info-box">
 
@@ -159,14 +164,20 @@ Unterschrift *
 <canvas id="signature-pad"></canvas>
 
 <div class="button-row">
+
 <button type="button" class="clear-btn" id="clear">
 Unterschrift löschen
 </button>
+
 </div>
 
 <button type="submit" class="submit-btn">
 Jetzt bestätigen & absenden
 </button>
+
+<div class="loading" id="loading">
+PDF wird erstellt und versendet...
+</div>
 
 </form>
 
@@ -175,7 +186,7 @@ Jetzt bestätigen & absenden
 <h2>✅ Erfolgreich bestätigt</h2>
 
 <p>
-Die Vollmacht wurde erfolgreich erstellt und per E-Mail versendet.
+Die Vollmacht wurde erfolgreich als PDF erstellt und per E-Mail versendet.
 </p>
 
 </div>
@@ -183,11 +194,6 @@ Die Vollmacht wurde erfolgreich erstellt und per E-Mail versendet.
 </div>
 
 <script>
-
-emailjs.init("SGyf9M8n2gNJTZ6Ds");
-
-const serviceID = "service_2os3z8o";
-const templateID = "template_7xv5awl";
 
 const canvas = document.getElementById("signature-pad");
 const ctx = canvas.getContext("2d");
@@ -265,7 +271,7 @@ ctx.clearRect(0,0,canvas.width,canvas.height);
 
 });
 
-document.getElementById("vollmachtForm").addEventListener("submit",function(e){
+document.getElementById("vollmachtForm").addEventListener("submit",async function(e){
 
 e.preventDefault();
 
@@ -278,87 +284,56 @@ return;
 
 }
 
-const vorname = document.getElementById("vorname").value;
-const nachname = document.getElementById("nachname").value;
-const strasse = document.getElementById("strasse").value;
-const plz = document.getElementById("plz").value;
-const stadt = document.getElementById("stadt").value;
-const geburt = document.getElementById("geburt").value;
-const kunden_email = document.getElementById("kunden_email").value;
+document.getElementById("loading").style.display = "block";
 
-const htmlMessage = `
+const data = {
 
-<h2>Neue StabilTarife Vollmacht</h2>
+vorname: document.getElementById("vorname").value,
+nachname: document.getElementById("nachname").value,
+strasse: document.getElementById("strasse").value,
+plz: document.getElementById("plz").value,
+stadt: document.getElementById("stadt").value,
+geburt: document.getElementById("geburt").value,
+email: document.getElementById("email").value,
+signature: signature
 
-<p><strong>Vorname:</strong> ${vorname}</p>
+};
 
-<p><strong>Nachname:</strong> ${nachname}</p>
+try{
 
-<p><strong>Straße:</strong> ${strasse}</p>
+const response = await fetch("/api/send",{
 
-<p><strong>PLZ:</strong> ${plz}</p>
+method:"POST",
 
-<p><strong>Stadt:</strong> ${stadt}</p>
+headers:{
+"Content-Type":"application/json"
+},
 
-<p><strong>Geburtsdatum:</strong> ${geburt}</p>
+body: JSON.stringify(data)
 
-<p><strong>E-Mail:</strong> ${kunden_email}</p>
+});
 
-<hr>
+const result = await response.json();
 
-<p>
-Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez,
-in meinem Namen Energie- und Versicherungsangebote einzuholen,
-Tarifvergleiche durchzuführen und abzuschließen sowie mit
-Energieversorgern und Versicherungen zu kommunizieren.
-</p>
-
-<h3>Unterschrift</h3>
-
-<img src="${signature}" 
-style="max-width:320px;border:1px solid #ccc;border-radius:10px;">
-
-`;
-
-emailjs.send(serviceID, templateID, {
-
-title:"Neue StabilTarife Vollmacht",
-
-name: vorname + " " + nachname,
-
-email: kunden_email,
-
-reply_to: kunden_email,
-
-to_email: kunden_email,
-
-bcc_email:"info@stabiltarife.de",
-
-vorname: vorname,
-nachname: nachname,
-strasse: strasse,
-plz: plz,
-stadt: stadt,
-geburt: geburt,
-kunden_email: kunden_email,
-
-message: htmlMessage
-
-})
-
-.then(function(){
+if(result.success){
 
 document.getElementById("vollmachtForm").style.display = "none";
 
+document.getElementById("loading").style.display = "none";
+
 document.getElementById("successBox").style.display = "block";
 
-})
+}else{
 
-.catch(function(error){
+alert(result.error || "Fehler");
 
-alert("Fehler beim Versand: " + JSON.stringify(error));
+}
 
-});
+}catch(err){
+
+alert("Fehler beim Versand.");
+
+}
 
 });
 
