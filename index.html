@@ -8,6 +8,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
 
@@ -92,10 +93,6 @@ font-weight:bold;
 margin-top:20px;
 }
 
-.button:hover{
-opacity:0.9;
-}
-
 .small{
 font-size:12px;
 color:gray;
@@ -170,11 +167,7 @@ Digitale Service- & Handlungsvollmacht
 
 <div class="box">
 
-Hiermit bevollmächtige und berechtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Energie- und Versicherungsangebote einzuholen, Anbieter und Versicherungen zu kontaktieren, Tarifvergleiche durchzuführen sowie Strom-, Gas- und Versicherungsverträge nach vorheriger Absprache mit mir zu vermitteln und vorzubereiten.<br><br>
-
-StabilTarife darf hierzu notwendige vertragsbezogene Informationen einholen und mit Energieversorgern, Versicherungen sowie Vertragspartnern kommunizieren.<br><br>
-
-Vertragsabschlüsse erfolgen ausschließlich nach meiner ausdrücklichen Zustimmung.
+Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Energie- und Versicherungsangebote einzuholen, Verträge zu vermitteln oder abzuschließen sowie mit Anbietern und Versicherungen zu kommunizieren.
 
 </div>
 
@@ -183,7 +176,7 @@ Vertragsabschlüsse erfolgen ausschließlich nach meiner ausdrücklichen Zustimm
 <canvas id="signature"></canvas>
 
 <button class="button" onclick="generatePDF()">
-Jetzt unterschreiben & PDF erstellen
+Jetzt unterschreiben & absenden
 </button>
 
 <div class="small">
@@ -192,7 +185,7 @@ Ihre Daten werden ausschließlich zur Energie- und Versicherungsoptimierung verw
 
 <div class="footer">
 StabilTarife • Ibrahim Doenmez<br>
-017621722127 • info@stabilenergie.de
+info@stabiltarife.de
 </div>
 
 </div>
@@ -202,16 +195,14 @@ StabilTarife • Ibrahim Doenmez<br>
 <h2>✅ Erfolgreich bestätigt</h2>
 
 <p>
-Die digitale Vollmacht wurde erfolgreich erstellt.
-</p>
-
-<p>
-Das PDF wurde heruntergeladen.
+Die Vollmacht wurde erfolgreich erstellt und per E-Mail versendet.
 </p>
 
 </div>
 
 <script>
+
+emailjs.init("DEIN_PUBLIC_KEY");
 
 const canvas = document.getElementById('signature');
 const signaturePad = new SignaturePad(canvas);
@@ -250,12 +241,12 @@ return;
 
 const { jsPDF } = window.jspdf;
 
+const doc = new jsPDF();
+
 let now = new Date();
 
 let datum = now.toLocaleDateString("de-DE");
 let zeit = now.toLocaleTimeString("de-DE");
-
-const doc = new jsPDF();
 
 doc.setFontSize(18);
 doc.text("StabilTarife Service- & Handlungsvollmacht",20,20);
@@ -274,15 +265,30 @@ doc.text("E-Mail: " + email,20,120);
 
 doc.text(" ",20,130);
 
-doc.text("Der Kunde erteilt StabilTarife die digitale",20,140);
-doc.text("Service- und Handlungsvollmacht.",20,150);
+doc.text("Hiermit berechtige ich StabilTarife bzw.",20,140);
+doc.text("Ibrahim Doenmez, in meinem Namen",20,150);
+doc.text("Energie- und Versicherungsangebote",20,160);
+doc.text("einzuholen, Verträge zu vermitteln oder",20,170);
+doc.text("abzuschließen sowie mit Anbietern und",20,180);
+doc.text("Versicherungen zu kommunizieren.",20,190);
 
-doc.text("Datum: " + datum,20,170);
-doc.text("Uhrzeit: " + zeit,20,180);
+doc.text("Datum: " + datum,20,210);
+doc.text("Uhrzeit: " + zeit,20,220);
 
 const signatureImage = signaturePad.toDataURL();
 
-doc.addImage(signatureImage,'PNG',20,190,70,30);
+doc.addImage(signatureImage,'PNG',20,230,70,30);
+
+const pdfBase64 = doc.output('datauristring');
+
+emailjs.send("DEIN_SERVICE_ID","DEIN_TEMPLATE_ID",{
+
+kunde_email: email,
+kunde_name: vorname + " " + nachname,
+pdf_datei: pdfBase64,
+empfaenger: "info@stabiltarife.de"
+
+});
 
 doc.save("StabilTarife-Vollmacht.pdf");
 
