@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>StabilTarife Servicefreigabe</title>
+<title>StabilTarife Vollmacht</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
 
@@ -20,7 +22,7 @@ padding:20px;
 
 .card{
 background:white;
-max-width:500px;
+max-width:550px;
 width:100%;
 padding:25px;
 border-radius:25px;
@@ -63,6 +65,14 @@ margin-bottom:18px;
 line-height:1.7;
 }
 
+canvas{
+border:2px dashed #ccc;
+border-radius:15px;
+width:100%;
+height:200px;
+background:white;
+}
+
 .button{
 background:black;
 color:white;
@@ -73,10 +83,7 @@ border-radius:18px;
 font-size:18px;
 cursor:pointer;
 font-weight:bold;
-}
-
-.button:hover{
-opacity:0.9;
+margin-top:20px;
 }
 
 .small{
@@ -113,7 +120,7 @@ color:gray;
 <h1>StabilTarife</h1>
 
 <p class="subtitle">
-Digitale Servicefreigabe
+Digitale Service- & Handlungsvollmacht
 </p>
 
 <label>Vorname</label>
@@ -150,15 +157,21 @@ Digitale Servicefreigabe
 </div>
 
 <div class="box">
-Mit meiner Bestätigung erteile ich StabilTarife die Zustimmung zur Unterstützung bei Energie- und Versicherungsoptimierungen sowie zur Kommunikation mit Anbietern.
+Hiermit bevollmächtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Angebote einzuholen, Anbieter zu kontaktieren, Tarifwechsel vorzubereiten sowie Energie- und Versicherungsverträge zu vermitteln.<br><br>
+
+Vertragsabschlüsse erfolgen ausschließlich nach meiner Zustimmung.
 </div>
 
+<label>Digitale Unterschrift</label>
+
+<canvas id="signature"></canvas>
+
 <button class="button" onclick="generatePDF()">
-Jetzt bestätigen & PDF erstellen
+Jetzt unterschreiben & absenden
 </button>
 
 <div class="small">
-Ihre Daten werden ausschließlich zur Energie- und Versicherungsoptimierung verwendet und nicht an Dritte verkauft. Die Zustimmung kann jederzeit widerrufen werden.
+Ihre Daten werden ausschließlich zur Energie- und Versicherungsoptimierung verwendet und vertraulich behandelt. Die Zustimmung kann jederzeit widerrufen werden.
 </div>
 
 <div class="footer">
@@ -173,18 +186,24 @@ StabilTarife • Ibrahim Doenmez<br>
 <h2>✅ Erfolgreich bestätigt</h2>
 
 <p>
-Die Servicefreigabe wurde erfolgreich erstellt.
-</p>
-
-<p>
-Das PDF wurde heruntergeladen.
+Die Vollmacht wurde erfolgreich erstellt und versendet.
 </p>
 
 </div>
 
 <script>
 
+emailjs.init("DEIN_PUBLIC_KEY");
+
+const canvas = document.getElementById('signature');
+const signaturePad = new SignaturePad(canvas);
+
 async function generatePDF(){
+
+if(signaturePad.isEmpty()){
+alert("Bitte unterschreiben.");
+return;
+}
 
 const { jsPDF } = window.jspdf;
 
@@ -206,32 +225,33 @@ let zeit = now.toLocaleTimeString("de-DE");
 const doc = new jsPDF();
 
 doc.setFontSize(18);
-doc.text("StabilTarife Servicefreigabe", 20, 20);
+doc.text("StabilTarife Service- & Handlungsvollmacht",20,20);
 
 doc.setFontSize(12);
 
-doc.text("Vorname: " + vorname, 20, 40);
-doc.text("Nachname: " + nachname, 20, 50);
-doc.text("Straße: " + strasse, 20, 60);
-doc.text("Hausnummer: " + hausnummer, 20, 70);
-doc.text("PLZ: " + plz, 20, 80);
-doc.text("Stadt: " + stadt, 20, 90);
-doc.text("Geburtsdatum: " + geburt, 20, 100);
-doc.text("Telefon: " + telefon, 20, 110);
-doc.text("E-Mail: " + email, 20, 120);
+doc.text("Vorname: " + vorname,20,40);
+doc.text("Nachname: " + nachname,20,50);
+doc.text("Straße: " + strasse,20,60);
+doc.text("Hausnummer: " + hausnummer,20,70);
+doc.text("PLZ: " + plz,20,80);
+doc.text("Stadt: " + stadt,20,90);
+doc.text("Geburtsdatum: " + geburt,20,100);
+doc.text("Telefon: " + telefon,20,110);
+doc.text("E-Mail: " + email,20,120);
 
-doc.text(" ", 20, 130);
+doc.text(" ",20,130);
 
-doc.text("Der Kunde erteilt StabilTarife die Zustimmung", 20, 140);
-doc.text("zur Unterstützung bei Energie- und", 20, 150);
-doc.text("Versicherungsoptimierungen.", 20, 160);
+doc.text("Der Kunde erteilt StabilTarife die Vollmacht",20,140);
+doc.text("zur Vermittlung und Kommunikation mit Anbietern.",20,150);
 
-doc.text(" ", 20, 170);
+doc.text("Datum: " + datum,20,170);
+doc.text("Uhrzeit: " + zeit,20,180);
 
-doc.text("Datum: " + datum, 20, 180);
-doc.text("Uhrzeit: " + zeit, 20, 190);
+const signatureImage = signaturePad.toDataURL();
 
-doc.save("StabilTarife-Servicefreigabe.pdf");
+doc.addImage(signatureImage,'PNG',20,190,60,30);
+
+doc.save("StabilTarife-Vollmacht.pdf");
 
 document.getElementById("formCard").style.display="none";
 document.getElementById("successCard").style.display="block";
