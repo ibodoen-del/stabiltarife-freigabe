@@ -78,7 +78,7 @@ secure: false,
 
 auth: {
 user: "info@stabiltarife.de",
-pass: "DEIN_PASSWORT_HIER"
+pass: "22021998Zhn#.,"
 }
 
 });
