@@ -85,13 +85,23 @@ font-size:13px;
 color:gray;
 }
 
+.success{
+display:none;
+text-align:center;
+padding:30px;
+}
+
+.success h2{
+color:green;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<div class="card">
+<div class="card" id="formCard">
 
 <h1>StabilTarife</h1>
 
@@ -100,7 +110,7 @@ Digitale Servicefreigabe
 </p>
 
 <label>Name</label>
-<input value="Max Mustermann">
+<input id="name" value="Max Mustermann">
 
 <label>Adresse</label>
 <input value="Musterstraße 1">
@@ -118,8 +128,7 @@ Digitale Servicefreigabe
 Mit meiner Bestätigung erteile ich StabilTarife die Zustimmung zur Unterstützung bei Energie- und Versicherungsoptimierungen sowie zur Kommunikation mit Anbietern.
 </div>
 
-<button class="button"
-onclick="window.location.href='https://wa.me/4917621722127?text=Hallo%20StabilTarife,%20ich%20bestätige%20die%20digitale%20Servicefreigabe.'">
+<button class="button" onclick="confirmForm()">
 Jetzt bestätigen
 </button>
 
@@ -133,6 +142,54 @@ StabilTarife • Ibrahim Doenmez<br>
 </div>
 
 </div>
+
+<div class="card success" id="successCard">
+
+<h2>✅ Erfolgreich bestätigt</h2>
+
+<p>
+Vielen Dank.<br><br>
+Ihre Servicefreigabe wurde erfolgreich bestätigt und gespeichert.
+</p>
+
+<p id="savedData"></p>
+
+</div>
+
+<script>
+
+function confirmForm(){
+
+let name = document.getElementById("name").value;
+
+let now = new Date();
+
+let date = now.toLocaleDateString("de-DE");
+let time = now.toLocaleTimeString("de-DE");
+
+localStorage.setItem("kunde_name", name);
+localStorage.setItem("zustimmung_datum", date);
+localStorage.setItem("zustimmung_uhrzeit", time);
+
+document.getElementById("formCard").style.display="none";
+
+document.getElementById("successCard").style.display="block";
+
+document.getElementById("savedData").innerHTML =
+"<b>Name:</b> " + name + "<br>" +
+"<b>Datum:</b> " + date + "<br>" +
+"<b>Uhrzeit:</b> " + time;
+
+setTimeout(function(){
+
+window.location.href =
+"https://wa.me/4917621722127?text=Hallo%20StabilTarife,%20ich%20bestätige%20die%20digitale%20Servicefreigabe.";
+
+},3000);
+
+}
+
+</script>
 
 </body>
 </html>
