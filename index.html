@@ -8,6 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
+
 body{
 font-family:Arial,sans-serif;
 background:#f3f4f6;
@@ -36,7 +37,7 @@ margin-top:15px;
 font-weight:bold;
 }
 
-input, textarea{
+input{
 width:100%;
 padding:12px;
 margin-top:5px;
@@ -44,11 +45,6 @@ border-radius:10px;
 border:1px solid #ccc;
 font-size:16px;
 box-sizing:border-box;
-}
-
-textarea{
-height:140px;
-resize:none;
 }
 
 .signature-box{
@@ -105,6 +101,14 @@ line-height:1.7;
 margin-bottom:25px;
 border:1px solid #e5e7eb;
 }
+
+.small{
+font-size:12px;
+color:#666;
+margin-top:20px;
+line-height:1.6;
+}
+
 </style>
 </head>
 
@@ -115,12 +119,9 @@ border:1px solid #e5e7eb;
 <h1>StabilTarife Vollmacht</h1>
 
 <div class="textbox">
-Hiermit bevollmächtige und berechtige ich StabilTarife bzw. Ibrahim Doenmez, 
-in meinem Namen Energie- und Versicherungsangebote einzuholen, Anbieter und Versicherungen zu kontaktieren, 
-Tarifvergleiche durchzuführen sowie Strom-, Gas- und Versicherungsverträge zu vermitteln und abzuschließen.
 
-StabilTarife darf hierzu mit Energieversorgern, Versicherungen sowie Vertragspartnern kommunizieren 
-und notwendige vertragsbezogene Informationen einholen und weitergeben.
+Hiermit berechtige ich StabilTarife bzw. Ibrahim Doenmez, in meinem Namen Energie- und Versicherungsangebote einzuholen, Tarifvergleiche durchzuführen und abzuschließen sowie mit Energieversorgern und Versicherungen zu kommunizieren.
+
 </div>
 
 <form id="vollmachtForm">
@@ -166,6 +167,12 @@ Unterschrift löschen
 Vollmacht unterschreiben & absenden
 </button>
 
+<div class="small">
+
+Ihre Daten werden ausschließlich zur Energie- und Versicherungsoptimierung verwendet und vertraulich behandelt.
+
+</div>
+
 </form>
 
 <div class="success" id="success">
@@ -205,6 +212,7 @@ ctx.beginPath();
 }
 
 function draw(e){
+
 if(!drawing) return;
 
 ctx.lineWidth = 2;
@@ -225,6 +233,7 @@ ctx.moveTo(
 e.clientX - rect.left,
 e.clientY - rect.top
 );
+
 }
 
 function startTouch(e){
@@ -233,6 +242,7 @@ drawing = true;
 }
 
 function drawTouch(e){
+
 e.preventDefault();
 
 if(!drawing) return;
@@ -256,6 +266,7 @@ ctx.moveTo(
 touch.clientX - rect.left,
 touch.clientY - rect.top
 );
+
 }
 
 function clearSignature(){
@@ -274,6 +285,7 @@ return;
 }
 
 const data = {
+
 vorname: document.getElementById('vorname').value,
 nachname: document.getElementById('nachname').value,
 adresse: document.getElementById('adresse').value,
@@ -284,6 +296,7 @@ email: document.getElementById('email').value,
 telefon: document.getElementById('telefon').value,
 ortdatum: document.getElementById('ortdatum').value,
 signature: signatureData
+
 };
 
 emailjs.send(
@@ -291,6 +304,7 @@ emailjs.send(
 'DEINE_TEMPLATE_ID',
 data
 )
+
 .then(function(){
 
 document.getElementById('success').style.display='block';
@@ -305,6 +319,7 @@ behavior:'smooth'
 });
 
 })
+
 .catch(function(error){
 
 alert("Fehler beim Versand: " + JSON.stringify(error));
@@ -312,6 +327,7 @@ alert("Fehler beim Versand: " + JSON.stringify(error));
 });
 
 });
+
 </script>
 
 </body>
